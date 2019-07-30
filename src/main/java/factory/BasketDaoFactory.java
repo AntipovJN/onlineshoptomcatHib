@@ -12,7 +12,7 @@ public class BasketDaoFactory {
 
     public static BasketDao getInstance() {
         if (Objects.isNull(basketDao)) {
-            basketDao = new BasketDaoJDBC();
+            basketDao = new BasketDaoHibernate();
         }
         return basketDao;
     }

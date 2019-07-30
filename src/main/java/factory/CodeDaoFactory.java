@@ -12,7 +12,7 @@ public class CodeDaoFactory {
 
     public static CodeDao getInstance() {
         if (Objects.isNull(codeDao)) {
-            codeDao = new CodeDaoJDBC();
+            codeDao = new CodeDaoHibernate();
         }
         return codeDao;
     }
