@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import utils.HibernateUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class BasketDaoHibernate implements BasketDao {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(new Basket(user, Collections.emptyList()));
+            session.save(new Basket(user, new ArrayList<>()));
             transaction.commit();
         } catch (Exception e) {
             if (!Objects.isNull(transaction)) {
@@ -34,16 +35,10 @@ public class BasketDaoHibernate implements BasketDao {
 
     @Override
     public Optional<Basket> getById(long id) {
-        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
             Optional<Basket> optionalBasket = Optional.ofNullable(session.get(Basket.class, id));
-            transaction.commit();
             return optionalBasket;
         } catch (Exception e) {
-            if (!Objects.isNull(transaction)) {
-                transaction.rollback();
-            }
             logger.error(String.format("Failed get basket with id ='%s'", id), e);
             return Optional.empty();
         }

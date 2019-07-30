@@ -21,7 +21,7 @@ public class Basket {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     private User user;

@@ -1,6 +1,7 @@
 package service.impl;
 
 import model.Code;
+import org.apache.log4j.Logger;
 import service.MailService;
 
 import javax.mail.Message;
@@ -14,7 +15,9 @@ import java.util.Properties;
 
 public class MailServiceImpl implements MailService {
 
-    public void sendMessage(Code code, String email) {
+    private static final Logger logger = Logger.getLogger(MailServiceImpl.class);
+
+    public void sendMessage(Code code) {
 
         final String username = "tes.web.stor@gmail.com";
         final String password = "testWebStore";
@@ -39,17 +42,13 @@ public class MailServiceImpl implements MailService {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse(email)
+                    InternetAddress.parse(code.getUser().getEmail())
             );
             message.setSubject("Code of authentication");
             message.setText(Integer.toString(code.getCodeValue()));
-
             Transport.send(message);
-
-            System.out.println("Done");
-
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.error(String.format("Failed send message for user id = '%s",code.getUser().getId()), e);
         }
     }
 }

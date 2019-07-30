@@ -34,7 +34,7 @@ public class ConfirmOrderServlet extends HttpServlet {
         if (optional.isPresent()) {
             Order order = optional.get();
             req.setAttribute("sum", order.getSum());
-            mailService.sendMessage(order.getCode(), user.getEmail());
+            mailService.sendMessage(order.getCode());
             req.getRequestDispatcher("/confirmOrder.jsp").forward(req, resp);
         } else {
             resp.sendRedirect("/products");
@@ -44,9 +44,8 @@ public class ConfirmOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        long id = 0;
         try {
-            id = Long.valueOf(req.getParameter("id"));
+           Long id = Long.valueOf(req.getParameter("id"));
             int code = Integer.valueOf(req.getParameter("code"));
             if (code != orderService.getById(id).get().getCode().getCodeValue()) {
                 throw new NumberFormatException("invalid code");
