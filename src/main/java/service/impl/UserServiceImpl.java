@@ -5,7 +5,6 @@ import factory.UserDaoFactory;
 import model.User;
 import org.apache.log4j.Logger;
 import service.UserService;
-import utils.IdGenerator;
 
 import javax.security.auth.login.LoginException;
 import java.util.List;
@@ -19,13 +18,13 @@ public class UserServiceImpl implements UserService {
     private static final UserDao userDao = UserDaoFactory.getInstance();
 
     @Override
-    public void addUser(String email, String password, String passwordAgain, String role)
+    public void addUser(String email, String password, String passwordAgain, String role, String salt)
             throws IllegalArgumentException, LoginException {
         validateUserData(email, password, passwordAgain);
         if ((getByEmail(email).isPresent())) {
             throw new LoginException("Try another login");
         }
-        userDao.addUser(new User(IdGenerator.getUserID(), email, password, role));
+        userDao.addUser(new User(email, password, role, salt));
     }
 
     @Override
@@ -51,8 +50,13 @@ public class UserServiceImpl implements UserService {
             log.error(String.format("Failed update user with id ='%s'", id));
             throw new LoginException("Use another email");
         }
-        userDao.updateUser(new User(id, newEmail, newPassword, userDao.getById(id).get().getRole()));
+        Optional<User> optionalUser = userDao.getById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            userDao.updateUser(new User(id, newEmail, newPassword, user.getRole(), user.getSalt()));
+        }
     }
+
 
     @Override
     public void removeUser(Long id) {

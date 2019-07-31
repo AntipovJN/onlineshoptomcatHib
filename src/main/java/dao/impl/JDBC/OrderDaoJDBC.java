@@ -147,7 +147,8 @@ public class OrderDaoJDBC implements OrderDao {
                                 new User(resultSet.getLong("user_id"),
                                         resultSet.getString("email"),
                                         resultSet.getString("password"),
-                                        resultSet.getString("role"))),
+                                        resultSet.getString("role"),
+                                        resultSet.getString("salt"))),
                         basket);
                 order.setId(resultSet.getLong("id"));
                 return Optional.of(order);

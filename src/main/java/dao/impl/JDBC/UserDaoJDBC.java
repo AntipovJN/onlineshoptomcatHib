@@ -44,7 +44,8 @@ public class UserDaoJDBC implements UserDao {
                 userList.add(new User(resultSet.getLong("id"),
                         resultSet.getString("email"),
                         resultSet.getString("password"),
-                        resultSet.getString("role")));
+                        resultSet.getString("role"),
+                        resultSet.getString("salt")));
             }
         } catch (SQLException e) {
             logger.error("Failed getting list of users", e);
@@ -63,7 +64,8 @@ public class UserDaoJDBC implements UserDao {
             return Optional.of(new User(resultSet.getLong("id"),
                     resultSet.getString("email"),
                     resultSet.getString("password"),
-                    resultSet.getString("role")));
+                    resultSet.getString("role"),
+                    resultSet.getString("salt")));
         } catch (SQLException e) {
             logger.error(String.format("Failed getting user with email = '%s'", email), e);
         }
@@ -81,7 +83,8 @@ public class UserDaoJDBC implements UserDao {
             return Optional.of(new User(resultSet.getLong("id"),
                     resultSet.getString("email"),
                     resultSet.getString("password"),
-                    resultSet.getString("role")));
+                    resultSet.getString("role"),
+                    resultSet.getString("salt")));
         } catch (SQLException e) {
             logger.error(String.format("Failed getting user with id = '%s'", id), e);
         }

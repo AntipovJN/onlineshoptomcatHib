@@ -29,7 +29,6 @@ public class ConfirmOrderServlet extends HttpServlet {
             throws ServletException, IOException {
         long id = Long.valueOf(req.getSession().getAttribute("orderId").toString());
         req.setAttribute("orderId", id);
-        User user = (User) req.getSession().getAttribute("user");
         Optional<Order> optional = orderService.getById(id);
         if (optional.isPresent()) {
             Order order = optional.get();

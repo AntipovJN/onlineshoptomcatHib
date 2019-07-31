@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface UserService {
 
-    void addUser(String email, String password, String passwordAgain, String role) throws LoginException;
+    void addUser(String email, String password, String passwordAgain, String role, String salt)
+            throws LoginException;
 
     List<User> getAll();
 
@@ -16,7 +17,8 @@ public interface UserService {
 
     Optional<User> getById(Long id);
 
-    void updateUser(Long id, String email, String password, String passwordAgain) throws LoginException;
+    void updateUser(Long id, String email, String password, String passwordAgain)
+            throws LoginException;
 
     void removeUser(Long id);
 }
