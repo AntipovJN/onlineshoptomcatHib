@@ -10,7 +10,7 @@ public class ProductDaoFactory {
 
     public static synchronized ProductDao getInstance() {
         if (instance == null) {
-            instance = new ProductDaoJDBC();
+            instance = new ProductDaoHibernate();
         }
         return instance;
     }

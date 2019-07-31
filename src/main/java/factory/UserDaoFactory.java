@@ -10,7 +10,7 @@ public class UserDaoFactory {
 
     public static synchronized UserDao getInstance() {
         if (instance == null) {
-            instance = new UserDaoJDBC();
+            instance = new UserDaoHibernate();
         }
         return instance;
     }
