@@ -4,6 +4,7 @@ import factory.UserServiceFactory;
 import model.User;
 import service.UserService;
 import utils.SHA256StringHashUtil;
+import utils.SaltGeneratorUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(value = "/")
 public class SignInServlet extends HttpServlet {
@@ -21,9 +23,11 @@ public class SignInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String email = req.getParameter("email");
-        String password = SHA256StringHashUtil.getSha256(req.getParameter("password"));
-        if (userService.getByEmail(email).isPresent()) {
-            User user = userService.getByEmail(email).get();
+        Optional<User> optionalUser = userService.getByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String password = SHA256StringHashUtil.getSha256(SaltGeneratorUtil.saltPassword(
+                    req.getParameter("password"), user.getSalt()));
             if (user.getPassword().equals(password)) {
                 req.getSession().setAttribute("user", user);
                 resp.sendRedirect("/users");

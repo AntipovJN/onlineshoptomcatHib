@@ -4,6 +4,7 @@ import factory.UserServiceFactory;
 import model.User;
 import service.UserService;
 import utils.SHA256StringHashUtil;
+import utils.SaltGeneratorUtil;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet(value = "/users/edit")
 public class EditUserServlet extends HttpServlet {
@@ -36,15 +38,20 @@ public class EditUserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Long id = Long.valueOf(req.getParameter("id"));
-        String email = req.getParameter("email");
-        String password = SHA256StringHashUtil.getSha256(req.getParameter("password"));
-        String passwordAgain = SHA256StringHashUtil.getSha256(req.getParameter("repeatPassword"));
-        try {
-            userService.updateUser(id, email, password, passwordAgain);
-            resp.sendRedirect("/users");
-        } catch (IllegalArgumentException | LoginException e) {
-            req.setAttribute("error", e.getMessage());
-            doGet(req, resp);
+        Optional<User> userOptional = userService.getById(id);
+        if (userOptional.isPresent()) {
+            String email = req.getParameter("email");
+            String password = SHA256StringHashUtil.getSha256(SaltGeneratorUtil.saltPassword(
+                    req.getParameter("password"), userOptional.get().getSalt()));
+            String passwordAgain = SHA256StringHashUtil.getSha256(
+                    req.getParameter("repeatPassword"));
+            try {
+                userService.updateUser(id, email, password, passwordAgain);
+                resp.sendRedirect("/users");
+            } catch (IllegalArgumentException | LoginException e) {
+                req.setAttribute("error", e.getMessage());
+                doGet(req, resp);
+            }
         }
     }
 }

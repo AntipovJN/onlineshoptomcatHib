@@ -10,7 +10,7 @@ public class OrderDaoFactory {
 
     public static synchronized OrderDao getInstance() {
         if (instance == null) {
-            instance = new OrderDaoJDBC();
+            instance = new OrderDaoHibernate();
         }
         return instance;
     }

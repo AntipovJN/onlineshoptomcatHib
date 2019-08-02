@@ -10,6 +10,9 @@ public class SHA256StringHashUtil {
 
     public static String getSha256(String value) {
         try {
+            if (value.isEmpty()) {
+                throw new IllegalArgumentException("Empty string");
+            }
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(value.getBytes());
             return bytesToHex(messageDigest.digest());
