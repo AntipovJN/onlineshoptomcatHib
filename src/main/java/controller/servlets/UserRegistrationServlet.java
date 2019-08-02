@@ -2,6 +2,7 @@ package controller.servlets;
 
 import factory.UserServiceFactory;
 import service.UserService;
+import sun.security.provider.SHA;
 import utils.SHA256StringHashUtil;
 import utils.SaltGeneratorUtil;
 
@@ -29,9 +30,8 @@ public class UserRegistrationServlet extends HttpServlet {
             throws ServletException, IOException {
         String salt = SaltGeneratorUtil.getSalt();
         String email = req.getParameter("email");
-        String password = SaltGeneratorUtil.saltPassword(
-                SHA256StringHashUtil.getSha256(req.getParameter("password")),
-                SHA256StringHashUtil.getSha256(salt));
+        String password = SHA256StringHashUtil.getSha256(SaltGeneratorUtil.
+                saltPassword(req.getParameter("password"), salt));
         String repeatPassword = SaltGeneratorUtil.saltPassword(
                 SHA256StringHashUtil.getSha256(req.getParameter("repeatPassword")),
                 SHA256StringHashUtil.getSha256(salt));

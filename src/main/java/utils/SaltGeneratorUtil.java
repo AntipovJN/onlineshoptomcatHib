@@ -15,7 +15,6 @@ public class SaltGeneratorUtil {
 
     public static String saltPassword(String password, String salt) {
         int mid = salt.length() / 2;
-        String[] parseSalt = {salt.substring(0, mid), salt.substring(mid)};
-        return parseSalt[0] + password + parseSalt[1];
+        return salt.substring(0, mid) + password + salt.substring(mid);
     }
 }

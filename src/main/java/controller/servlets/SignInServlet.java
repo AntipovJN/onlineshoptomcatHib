@@ -26,9 +26,8 @@ public class SignInServlet extends HttpServlet {
         Optional<User> optionalUser = userService.getByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            String password = SaltGeneratorUtil.saltPassword(
-                    SHA256StringHashUtil.getSha256(req.getParameter("password")),
-                    SHA256StringHashUtil.getSha256(user.getSalt()));
+            String password = SHA256StringHashUtil.getSha256(SaltGeneratorUtil.saltPassword(
+                    req.getParameter("password"), user.getSalt()));
             if (user.getPassword().equals(password)) {
                 req.getSession().setAttribute("user", user);
                 resp.sendRedirect("/users");
